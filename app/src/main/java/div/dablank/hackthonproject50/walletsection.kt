@@ -17,9 +17,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-
-
-
 import java.text.SimpleDateFormat
 import java.util.*
 
