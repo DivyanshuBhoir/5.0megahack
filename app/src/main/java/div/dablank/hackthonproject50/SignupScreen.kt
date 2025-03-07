@@ -1,15 +1,18 @@
 package div.dablank.hackthonproject50
 
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import android.widget.Toast
-import androidx.compose.ui.platform.LocalContext
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -24,8 +27,14 @@ fun SignupScreen(navController: NavController) {
     val auth = FirebaseAuth.getInstance()
     val db = FirebaseFirestore.getInstance()
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current // Focus manager to dismiss keyboard
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .clickable { focusManager.clearFocus() } // Hide keyboard on outside click
+    ) {
         Text(text = "SignUp", style = MaterialTheme.typography.headlineLarge)
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -66,6 +75,7 @@ fun SignupScreen(navController: NavController) {
         }
 
         Button(onClick = {
+            focusManager.clearFocus() // Hide keyboard on button click
             if (nametag.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 errorMessage = "Please fill in all fields"
             } else if (password != confirmPassword) {
@@ -81,7 +91,7 @@ fun SignupScreen(navController: NavController) {
                                         val user = hashMapOf(
                                             "nametag" to nametag,
                                             "email" to email,
-                                            "balance" to 1000 // Initial balance
+                                            "balance" to 1000
                                         )
 
                                         db.collection("users").document(userId).set(user)
@@ -122,9 +132,9 @@ fun checkNametagUnique(nametag: String, onResult: (Boolean) -> Unit) {
         .whereEqualTo("nametag", nametag)
         .get()
         .addOnSuccessListener { querySnapshot ->
-            onResult(querySnapshot.isEmpty) // If empty, nametag is unique
+            onResult(querySnapshot.isEmpty)
         }
         .addOnFailureListener {
-            onResult(false) // Assume not unique if error occurs
+            onResult(false)
         }
 }

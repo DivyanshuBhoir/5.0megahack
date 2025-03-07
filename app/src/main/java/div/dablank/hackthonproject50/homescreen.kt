@@ -16,26 +16,38 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
+import com.google.firebase.annotations.concurrent.Background
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChallengeApp(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController) {
     Scaffold(
-        topBar = { Topbar()},
+        topBar = { Topbar() },
         bottomBar = { BottomNavigationBar(navController) }
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black)
-                .padding(paddingValues)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            StoriesSection()
-            SocialFeed()
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Background Image
+            Image(
+                painter = painterResource(R.drawable.jay),
+                contentDescription = "Background image",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            // Main Content
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                StoriesSection()
+                SocialFeed()
+            }
         }
     }
 }
@@ -74,24 +86,24 @@ fun StoryCircle(name: String) {
 @Composable
 fun SocialFeed() {
     val posts = listOf(
-        SocialPostData("Alice", "Fitness Challenge", "3h ago"),
-        SocialPostData("Bob", "Gaming Showdown", "1d ago"),
-        SocialPostData("Charlie", "Coding Marathon", "5h ago"),
-        SocialPostData("Diana", "Photography Contest", "2d ago"),
-        SocialPostData("Eve", "Speed Chess Battle", "10h ago")
+        SocialPostData("Alice", "Fitness Challenge", "3h ago", R.drawable.baseline_fitness_center_24),
+        SocialPostData("Bob", "Gaming Showdown", "1d ago", R.drawable.baseline_videogame_asset_24),
+        SocialPostData("Charlie", "Coding Marathon", "5h ago", R.drawable.baseline_code_24),
+        SocialPostData("Diana", "Photography Contest", "2d ago", R.drawable.baseline_add_a_photo_24),
+        SocialPostData("Eve", "Speed Chess Battle", "10h ago", R.drawable.baseline_speed_24)
     )
 
     LazyColumn(modifier = Modifier.fillMaxWidth()) {
         items(posts) { post ->
-            SocialPost(post.user, post.challenge, post.timeAgo)
+            SocialPost(post.user, post.challenge, post.timeAgo, post.imageRes)
         }
     }
 }
 
-data class SocialPostData(val user: String, val challenge: String, val timeAgo: String)
+data class SocialPostData(val user: String, val challenge: String, val timeAgo: String, val imageRes: Int)
 
 @Composable
-fun SocialPost(user: String, challenge: String, timeAgo: String) {
+fun SocialPost(user: String, challenge: String, timeAgo: String, imageRes: Int) {
     Card(
         shape = RoundedCornerShape(15.dp),
         modifier = Modifier
@@ -102,19 +114,29 @@ fun SocialPost(user: String, challenge: String, timeAgo: String) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("@$user", color = Color.Cyan, fontSize = 16.sp, fontWeight = FontWeight.Bold)
             Text(challenge, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Image(
+                painter = painterResource(id = imageRes),
+                contentDescription = "Post Image",
+                modifier = Modifier.fillMaxWidth().height(200.dp).clip(RoundedCornerShape(10.dp))
+            )
             Text(timeAgo, color = Color.Gray, fontSize = 14.sp)
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(onClick = {}) { Text("Like") }
-                Button(onClick = {}) { Text("Comment") }
-                Button(onClick = {}) { Text("Share") }
+                IconButton(onClick = {}) {
+                    Icon(painterResource(R.drawable.baseline_thumb_up_24), contentDescription = "Like", tint = Color.White)
+                }
+                IconButton(onClick = {}) {
+                    Icon(painterResource(R.drawable.baseline_comment_24), contentDescription = "Comment", tint = Color.White)
+                }
+                IconButton(onClick = {}) {
+                    Icon(painterResource(R.drawable.baseline_share_24), contentDescription = "Share", tint = Color.White)
+                }
             }
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -139,6 +161,7 @@ fun BottomNavigationBar(navController: NavHostController) {
         }
     }
 }
+
 @Composable
 fun BottomNavItem(label: String, route: String, navController: NavHostController) {
     Text(
@@ -149,5 +172,3 @@ fun BottomNavItem(label: String, route: String, navController: NavHostController
             .padding(8.dp)
     )
 }
-
-

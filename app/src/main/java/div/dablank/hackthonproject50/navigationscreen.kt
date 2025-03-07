@@ -1,5 +1,8 @@
 package div.dablank.hackthonproject50
 
+
+
+import WalletScreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -20,7 +23,7 @@ fun AppNavigator() {
             NavHost(navController, startDestination = "login") {
                 composable("login") { LoginScreen(navController) }
                 composable("signup") { SignupScreen(navController) }
-                composable("home") { ChallengeApp(navController) }
+                composable("home") { HomeScreen(navController) }
                 composable("challenges") { ChallengesScreen(navController) }
                 composable("wallet") { WalletScreen(navController) }
                 composable("profile") { ProfileScreen(navController) }
@@ -30,7 +33,7 @@ fun AppNavigator() {
 }
 
 
-//
+
 //@OptIn(ExperimentalMaterial3Api::class)
 //@Composable
 //fun Topbar() {
